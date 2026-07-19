@@ -1,541 +1,315 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ROAST Café — Premium Coffee Experience</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&family=Great+Vibes&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
 --bg:#050505;--bg2:#0a0a0a;--bg3:#111;--bg4:#1a1a1a;--bg5:#222;
+--card-bg:#111;--card-border:rgba(201,168,76,.05);--card-hover-border:rgba(201,168,76,.2);
 --gold:#c9a84c;--gold2:#e8c95a;--gold3:#a07e2e;--gold4:#8a6c24;
---cream:#f2e8d5;--cream2:#c4b99a;--cream3:#8a8070;
---red:#dc3545;--green:#28a745;--blue:#007bff;
+--text:#f2e8d5;--text2:#c4b99a;--text3:#8a8070;
+--nav-bg:rgba(5,5,5,.85);--section-border:rgba(201,168,76,.06);
+}
+[data-theme="light"]{
+--bg:#f8f5f0;--bg2:#f0ece4;--bg3:#ffffff;--bg4:#e8e2d8;--bg5:#ddd5c8;
+--card-bg:#fff;--card-border:rgba(139,107,36,.1);--card-hover-border:rgba(139,107,36,.3);
+--gold:#8a6c24;--gold2:#a07e2e;--gold3:#c9a84c;--gold4:#d4b85a;
+--text:#1a1510;--text2:#4a4035;--text3:#8a7a68;
+--nav-bg:rgba(248,245,240,.9);--section-border:rgba(139,107,36,.08);
 }
 html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--gold4) var(--bg)}
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--gold4);border-radius:3px}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--cream);overflow-x:hidden}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--gold4);border-radius:3px}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;transition:background .4s,color .4s}
 
 /* ═══ CURSOR GLOW ═══ */
-.cursor-glow{
-position:fixed;width:500px;height:500px;border-radius:50%;
-background:radial-gradient(circle,rgba(201,168,76,.07),transparent 70%);
-pointer-events:none;z-index:9998;transform:translate(-50%,-50%);
-transition:left .15s ease-out,top .15s ease-out;
-mix-blend-mode:screen;
-}
+.cursor-glow{position:fixed;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.06),transparent 70%);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .15s ease-out,top .15s ease-out}
+[data-theme="light"] .cursor-glow{background:radial-gradient(circle,rgba(139,107,36,.04),transparent 70%)}
 
 /* ═══ LOADER ═══ */
-#loader{
-position:fixed;inset:0;z-index:99999;background:var(--bg);
-display:flex;flex-direction:column;align-items:center;justify-content:center;
-transition:opacity .8s ease,visibility .8s;
-}
+#loader{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s,visibility .8s}
 #loader.done{opacity:0;visibility:hidden;pointer-events:none}
-.loader-cup{
-width:80px;height:80px;position:relative;
-}
-.loader-cup::before{
-content:'☕';font-size:3rem;position:absolute;top:50%;left:50%;
-transform:translate(-50%,-50%);
-animation:cupBounce 1.2s ease-in-out infinite;
-}
-@keyframes cupBounce{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-60%) scale(1.1)}}
+.loader-cup{font-size:3.5rem;animation:cupBounce 1.2s ease-in-out infinite}
+@keyframes cupBounce{0%,100%{transform:scale(1)}50%{transform:scale(1.15) translateY(-8px)}}
 .loader-bar{width:200px;height:2px;background:var(--bg4);border-radius:2px;margin-top:30px;overflow:hidden}
-.loader-fill{width:0%;height:100%;background:linear-gradient(90deg,var(--gold3),var(--gold),var(--gold2));border-radius:2px;animation:loadFill 1.5s ease-out forwards}
+.loader-fill{width:0%;height:100%;background:linear-gradient(90deg,var(--gold3),var(--gold),var(--gold2));animation:loadFill 1.5s ease-out forwards}
 @keyframes loadFill{to{width:100%}}
-.loader-text{margin-top:20px;font-family:'Great Vibes';font-size:2rem;color:var(--gold);letter-spacing:2px;opacity:0;animation:fadeUp .6s .3s forwards}
-@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
-@keyframes spin{to{transform:rotate(360deg)}}
+.loader-text{margin-top:20px;font-family:'Great Vibes';font-size:2.2rem;color:var(--gold);opacity:0;animation:fadeUp .6s .3s forwards}
+@keyframes fadeUp{to{opacity:1}}
 
 /* ═══ NAV ═══ */
-nav{
-position:fixed;top:0;width:100%;z-index:1000;
-padding:20px 50px;display:flex;justify-content:space-between;align-items:center;
-transition:all .4s;
-}
-nav.scrolled{
-background:rgba(5,5,5,.95);backdrop-filter:blur(30px);
-padding:14px 50px;border-bottom:1px solid rgba(201,168,76,.08);
-}
-.nav-logo{font-family:'Great Vibes';font-size:2rem;color:var(--gold);text-decoration:none;transition:transform .3s}
+nav{position:fixed;top:0;width:100%;z-index:1000;padding:16px 40px;display:flex;justify-content:space-between;align-items:center;transition:all .4s;background:transparent}
+nav.scrolled{background:var(--nav-bg);backdrop-filter:blur(30px);padding:12px 40px;border-bottom:1px solid var(--section-border)}
+.nav-logo{font-family:'Great Vibes';font-size:1.8rem;color:var(--gold);text-decoration:none;transition:transform .3s}
 .nav-logo:hover{transform:scale(1.03)}
-.nav-links{display:flex;gap:32px;list-style:none}
-.nav-links a{
-color:var(--cream2);text-decoration:none;font-size:.82rem;
-font-weight:500;letter-spacing:1.5px;text-transform:uppercase;
-transition:color .3s;position:relative;
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:.8rem;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;transition:color .3s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-5px;right:0;width:0;height:1px;background:var(--gold);transition:width .3s}
+.nav-links a:hover{color:var(--gold)}.nav-links a:hover::after{width:100%}
+.nav-actions{display:flex;align-items:center;gap:12px}
+.theme-btn,.lang-btn{
+width:38px;height:38px;border-radius:50%;border:1px solid var(--card-border);
+background:var(--bg3);color:var(--text2);cursor:pointer;font-size:1rem;
+transition:all .3s;display:flex;align-items:center;justify-content:center;
 }
-.nav-links a::after{content:'';position:absolute;bottom:-6px;right:0;width:0;height:1px;background:var(--gold);transition:width .3s}
-.nav-links a:hover{color:var(--gold)}
-.nav-links a:hover::after{width:100%}
-.nav-cta{
-padding:10px 24px;border:1px solid var(--gold);color:var(--gold);
-background:transparent;border-radius:30px;font-size:.8rem;font-weight:600;
-letter-spacing:1px;cursor:pointer;transition:all .3s;text-transform:uppercase;
-}
+.theme-btn:hover,.lang-btn:hover{border-color:var(--gold);color:var(--gold)}
+.lang-btn{font-family:'Inter';font-size:.75rem;font-weight:700;letter-spacing:0}
+.nav-cta{padding:9px 22px;border:1px solid var(--gold);color:var(--gold);background:transparent;border-radius:25px;font-size:.75rem;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all .3s;text-transform:uppercase;font-family:'Inter'}
 .nav-cta:hover{background:var(--gold);color:var(--bg)}
+.mobile-toggle{display:none;background:none;border:none;color:var(--text);font-size:1.4rem;cursor:pointer}
 
 /* ═══ HERO ═══ */
-.hero{
-min-height:100vh;display:flex;align-items:center;justify-content:center;
-position:relative;overflow:hidden;
-}
-.hero-bg{
-position:absolute;inset:0;
-background:
-  radial-gradient(ellipse 80% 50% at 50% 50%,rgba(201,168,76,.06),transparent 60%),
-  radial-gradient(ellipse 40% 40% at 70% 30%,rgba(201,168,76,.03),transparent),
-  radial-gradient(ellipse 40% 60% at 20% 70%,rgba(201,168,76,.02),transparent),
-  var(--bg);
-}
-.hero-lines{
-position:absolute;inset:0;
-background-image:
-  linear-gradient(rgba(201,168,76,.015) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(201,168,76,.015) 1px,transparent 1px);
-background-size:80px 80px;
-}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 50%,rgba(201,168,76,.06),transparent 60%),radial-gradient(ellipse 40% 40% at 70% 30%,rgba(201,168,76,.03),transparent),var(--bg)}
+[data-theme="light"] .hero-bg{background:radial-gradient(ellipse 80% 50% at 50% 50%,rgba(139,107,36,.08),transparent 60%),var(--bg)}
+.hero-lines{position:absolute;inset:0;background-image:linear-gradient(var(--section-border) 1px,transparent 1px),linear-gradient(90deg,var(--section-border) 1px,transparent 1px);background-size:80px 80px}
 .hero-particles{position:absolute;inset:0}
-.hero-particle{
-position:absolute;width:3px;height:3px;background:var(--gold);border-radius:50%;
-opacity:0;animation:floatUp linear infinite;
-}
-@keyframes floatUp{
-0%{opacity:0;transform:translateY(100vh) scale(0)}
-10%{opacity:1}
-90%{opacity:1}
-100%{opacity:0;transform:translateY(-10vh) scale(1)}
-}
+.hero-particle{position:absolute;width:3px;height:3px;background:var(--gold);border-radius:50%;opacity:0;animation:floatUp linear infinite}
+@keyframes floatUp{0%{opacity:0;transform:translateY(100vh) scale(0)}10%{opacity:.6}90%{opacity:.6}100%{opacity:0;transform:translateY(-10vh) scale(1)}}
 .hero-content{text-align:center;position:relative;z-index:10;padding:0 20px}
-.hero-badge{
-display:inline-flex;align-items:center;gap:10px;
-padding:10px 28px;border:1px solid rgba(201,168,76,.2);border-radius:40px;
-font-size:.7rem;letter-spacing:4px;color:var(--gold);text-transform:uppercase;
-margin-bottom:35px;backdrop-filter:blur(10px);
-background:rgba(201,168,76,.03);
-animation:heroFade 1s .3s both;
-}
+.hero-badge{display:inline-flex;align-items:center;gap:10px;padding:10px 28px;border:1px solid var(--card-border);border-radius:40px;font-size:.7rem;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:35px;backdrop-filter:blur(10px);animation:heroFade 1s .3s both}
 .hero-badge .dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulseDot 2s infinite}
-@keyframes pulseDot{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(201,168,76,.4)}50%{opacity:.6;box-shadow:0 0 0 6px rgba(201,168,76,0)}}
-.hero-title{
-font-family:'Playfair Display';font-weight:900;
-font-size:clamp(4rem,12vw,10rem);line-height:.9;letter-spacing:-3px;
-margin-bottom:20px;animation:heroFade 1s .5s both;
-}
-.hero-title .line1{
-display:block;
-background:linear-gradient(135deg,var(--cream) 0%,var(--gold) 50%,var(--cream) 100%);
-background-size:200% 200%;
--webkit-background-clip:text;-webkit-text-fill-color:transparent;
-animation:goldShimmer 4s ease-in-out infinite;
-}
-.hero-title .line2{
-display:block;font-style:italic;font-weight:400;font-size:.55em;
-color:var(--cream2);
-}
+@keyframes pulseDot{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(201,168,76,.4)}50%{opacity:.5;box-shadow:0 0 0 8px rgba(201,168,76,0)}}
+.hero-title{font-family:'Playfair Display';font-weight:900;font-size:clamp(4rem,12vw,10rem);line-height:.9;letter-spacing:-3px;margin-bottom:20px;animation:heroFade 1s .5s both}
+.hero-title .l1{display:block;background:linear-gradient(135deg,var(--text) 0%,var(--gold) 50%,var(--text) 100%);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:goldShimmer 4s ease-in-out infinite}
+.hero-title .l2{display:block;font-style:italic;font-weight:400;font-size:.55em;color:var(--text2)}
 @keyframes goldShimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-.hero-sub{
-font-size:clamp(1rem,2vw,1.3rem);color:var(--cream3);
-max-width:500px;margin:0 auto 45px;line-height:1.8;
-animation:heroFade 1s .7s both;
-}
-.hero-buttons{
-display:flex;gap:16px;justify-content:center;flex-wrap:wrap;
-animation:heroFade 1s .9s both;
-}
-.btn-primary{
-padding:16px 40px;background:var(--gold);color:var(--bg);
-font-weight:700;font-size:.85rem;letter-spacing:2px;
-text-decoration:none;border-radius:var(--r);transition:all .4s;
-text-transform:uppercase;display:inline-flex;align-items:center;gap:8px;
-}
+.hero-sub{font-size:clamp(1rem,2vw,1.3rem);color:var(--text3);max-width:500px;margin:0 auto 45px;line-height:1.8;animation:heroFade 1s .7s both}
+.hero-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;animation:heroFade 1s .9s both}
+.btn-primary{padding:16px 40px;background:var(--gold);color:#0a0a0a;font-weight:700;font-size:.85rem;letter-spacing:2px;text-decoration:none;border-radius:12px;transition:all .4s;text-transform:uppercase;display:inline-flex;align-items:center;gap:8px}
 .btn-primary:hover{transform:translateY(-3px);box-shadow:0 20px 50px rgba(201,168,76,.3)}
-.btn-secondary{
-padding:16px 40px;background:transparent;color:var(--cream);
-border:1px solid rgba(201,168,76,.2);font-weight:600;font-size:.85rem;
-letter-spacing:2px;text-decoration:none;border-radius:var(--r);
-transition:all .4s;text-transform:uppercase;display:inline-flex;align-items:center;gap:8px;
-}
+.btn-secondary{padding:16px 40px;background:transparent;color:var(--text);border:1px solid var(--card-border);font-weight:600;font-size:.85rem;letter-spacing:2px;text-decoration:none;border-radius:12px;transition:all .4s;text-transform:uppercase}
 .btn-secondary:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-3px)}
 @keyframes heroFade{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-.hero-scroll{
-position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
-display:flex;flex-direction:column;align-items:center;gap:10px;
-color:var(--gold3);font-size:.65rem;letter-spacing:3px;text-transform:uppercase;
-animation:heroFade 1s 1.2s both;
-}
-.hero-scroll .scroll-line{width:1px;height:50px;background:linear-gradient(var(--gold3),transparent);position:relative;overflow:hidden}
-.hero-scroll .scroll-line::after{content:'';position:absolute;top:-100%;left:0;width:100%;height:100%;background:var(--gold);animation:scrollAnim 2s infinite}
+.hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--gold3);font-size:.65rem;letter-spacing:3px;text-transform:uppercase;animation:heroFade 1s 1.2s both}
+.hero-scroll .sl{width:1px;height:50px;background:linear-gradient(var(--gold3),transparent);position:relative;overflow:hidden}
+.hero-scroll .sl::after{content:'';position:absolute;top:-100%;left:0;width:100%;height:100%;background:var(--gold);animation:scrollAnim 2s infinite}
 @keyframes scrollAnim{0%{top:-100%}100%{top:100%}}
 
 /* ═══ STATS ═══ */
-.stats-section{
-padding:60px 50px;border-top:1px solid rgba(201,168,76,.06);border-bottom:1px solid rgba(201,168,76,.06);
-background:var(--bg2);
-}
+.stats-section{padding:50px 40px;border-top:1px solid var(--section-border);border-bottom:1px solid var(--section-border);background:var(--bg2);transition:background .4s}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);max-width:1200px;margin:0 auto}
-.stat{text-align:center;padding:30px 20px;position:relative}
-.stat:not(:last-child)::after{
-content:'';position:absolute;right:0;top:20%;height:60%;
-width:1px;background:rgba(201,168,76,.08);
-}
-.stat-num{
-font-family:'Playfair Display';font-size:3rem;font-weight:900;
-color:var(--gold);line-height:1;
-}
-.stat-suffix{font-size:1.5rem;font-weight:400}
-.stat-label{font-size:.8rem;color:var(--cream3);margin-top:8px;letter-spacing:2px;text-transform:uppercase}
+.stat{text-align:center;padding:25px 20px;position:relative}
+.stat:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;height:60%;width:1px;background:var(--section-border)}
+.stat-num{font-family:'Playfair Display';font-size:2.8rem;font-weight:900;color:var(--gold);line:1}
+.stat-suffix{font-size:1.3rem;font-weight:400}
+.stat-label{font-size:.75rem;color:var(--text3);margin-top:6px;letter-spacing:2px;text-transform:uppercase}
 
 /* ═══ SECTIONS ═══ */
-section{padding:100px 50px;position:relative}
-.section-overline{
-display:inline-flex;align-items:center;gap:10px;
-font-size:.7rem;letter-spacing:4px;color:var(--gold);
-text-transform:uppercase;margin-bottom:14px;font-weight:600;
-}
+section{padding:90px 40px;position:relative}
+.section-overline{display:inline-flex;align-items:center;gap:10px;font-size:.7rem;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;font-weight:600}
 .section-overline::before{content:'';width:30px;height:1px;background:var(--gold)}
-.section-title{
-font-family:'Playfair Display';font-size:clamp(2.2rem,5vw,4rem);
-font-weight:900;line-height:1.05;margin-bottom:12px;
-}
+.section-title{font-family:'Playfair Display';font-size:clamp(2rem,5vw,3.5rem);font-weight:900;line-height:1.05;margin-bottom:12px}
 .section-title em{color:var(--gold);font-style:italic;font-weight:400}
-.section-subtitle{color:var(--cream3);font-size:1rem;max-width:550px;line-height:1.8}
-.section-header{margin-bottom:60px}
+.section-subtitle{color:var(--text3);font-size:1rem;max-width:550px;line-height:1.8}
+.section-header{margin-bottom:50px}
 
 /* ═══ FILTER ═══ */
-.filter-wrap{
-display:flex;flex-wrap:wrap;gap:8px;margin-bottom:50px;
-}
-.filter-btn{
-padding:10px 22px;border:1px solid rgba(201,168,76,.12);background:transparent;
-color:var(--cream3);font-family:'Inter';font-size:.8rem;font-weight:500;
-border-radius:30px;cursor:pointer;transition:all .3s;letter-spacing:.5px;
-}
-.filter-btn.active,.filter-btn:hover{
-border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.06);
-}
+.filter-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:40px}
+.filter-btn{padding:9px 20px;border:1px solid var(--card-border);background:transparent;color:var(--text3);font-family:'Inter';font-size:.78rem;font-weight:500;border-radius:25px;cursor:pointer;transition:all .3s;letter-spacing:.5px}
+.filter-btn.active,.filter-btn:hover{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.06)}
 
 /* ═══ MENU GRID ═══ */
-.menu-grid{
-display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
-gap:24px;max-width:1400px;
-}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;max-width:1400px}
 
 /* ═══ CARD ═══ */
-.card{
-background:var(--bg3);border:1px solid rgba(201,168,76,.05);
-border-radius:20px;overflow:hidden;
-transition:all .5s cubic-bezier(.23,1,.32,1);
-position:relative;
-}
-.card:hover{
-transform:translateY(-10px);
-border-color:rgba(201,168,76,.2);
-box-shadow:0 40px 100px rgba(0,0,0,.5),0 0 0 1px rgba(201,168,76,.08);
-}
-.card-img{
-height:220px;position:relative;overflow:hidden;
-}
-.card-img-bg{position:absolute;inset:0;transition:transform .6s ease}
-.card:hover .card-img-bg{transform:scale(1.08)}
-.card-emoji{
-position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-font-size:5rem;z-index:2;filter:drop-shadow(0 10px 40px rgba(0,0,0,.4));
-transition:transform .4s ease;
-}
-.card:hover .card-emoji{transform:scale(1.1) translateY(-5px)}
-.card-tag{
-position:absolute;top:14px;right:14px;z-index:3;
-padding:5px 14px;border-radius:8px;font-size:.65rem;
-font-weight:700;letter-spacing:1px;text-transform:uppercase;
-}
-.tag-new{background:var(--red);color:#fff}
-.tag-hot{background:var(--gold);color:var(--bg)}
-.tag-veg{background:var(--green);color:#fff}
-.tag-chef{background:var(--purple,#7c3aed);color:#fff}
-.card-body{padding:22px}
-.card-name{font-family:'Playfair Display';font-size:1.15rem;font-weight:700;margin-bottom:4px}
-.card-desc{font-size:.8rem;color:var(--cream3);line-height:1.6;margin-bottom:16px;height:32px;overflow:hidden}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;overflow:hidden;transition:all .5s cubic-bezier(.23,1,.32,1);position:relative}
+.card:hover{transform:translateY(-8px);border-color:var(--card-hover-border);box-shadow:0 30px 80px rgba(0,0,0,.4)}
+[data-theme="light"] .card:hover{box-shadow:0 20px 60px rgba(0,0,0,.1)}
+.card-img{height:200px;position:relative;overflow:hidden}
+.card-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.card:hover .card-img img{transform:scale(1.08)}
+.card-img-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.7));z-index:1}
+.card-tag{position:absolute;top:12px;right:12px;z-index:3;padding:4px 12px;border-radius:6px;font-size:.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.tag-new{background:#dc3545;color:#fff}.tag-hot{background:var(--gold);color:#0a0a0a}.tag-veg{background:#28a745;color:#fff}.tag-chef{background:#7c3aed;color:#fff}
+.card-body{padding:18px}
+.card-name{font-family:'Playfair Display';font-size:1.05rem;font-weight:700;margin-bottom:3px}
+.card-name-ar{font-family:'Cairo';font-size:.82rem;color:var(--gold3);margin-bottom:8px}
+.card-desc{font-size:.78rem;color:var(--text3);line-height:1.6;margin-bottom:14px;height:30px;overflow:hidden}
 .card-footer{display:flex;justify-content:space-between;align-items:center}
-.card-price{font-family:'Playfair Display';font-size:1.4rem;font-weight:900;color:var(--gold)}
-.card-price small{font-size:.7rem;color:var(--cream3);font-weight:400;font-family:'Inter'}
-.card-rating{display:flex;align-items:center;gap:5px}
-.card-stars{color:var(--gold);font-size:.8rem}
-.card-rating-num{font-size:.8rem;color:var(--cream3)}
+.card-price{font-family:'Playfair Display';font-size:1.3rem;font-weight:900;color:var(--gold)}
+.card-price small{font-size:.65rem;color:var(--text3);font-weight:400;font-family:'Inter'}
+.card-rating{display:flex;align-items:center;gap:4px}
+.card-stars{color:var(--gold);font-size:.75rem}
+.card-rating-num{font-size:.75rem;color:var(--text3)}
 
 /* ═══ FEATURED ═══ */
-.featured-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;max-width:1200px}
-.featured-card{
-background:var(--bg3);border:1px solid rgba(201,168,76,.06);
-border-radius:20px;padding:36px;
-display:flex;align-items:center;gap:28px;
-transition:all .4s;position:relative;overflow:hidden;
-}
-.featured-card::before{
-content:'';position:absolute;top:0;right:0;width:200px;height:200px;
-background:radial-gradient(circle,rgba(201,168,76,.05),transparent);
-opacity:0;transition:opacity .4s;
-}
-.featured-card:hover::before{opacity:1}
-.featured-card:hover{
-border-color:rgba(201,168,76,.15);
-transform:translateY(-4px);
-box-shadow:0 20px 60px rgba(0,0,0,.3);
-}
-.featured-icon{
-font-size:3.5rem;min-width:100px;height:100px;
-display:flex;align-items:center;justify-content:center;
-background:var(--bg4);border-radius:16px;flex-shrink:0;
-}
-.featured-info h3{font-family:'Playfair Display';font-size:1.3rem;font-weight:700;margin-bottom:4px}
-.featured-info .sub{font-size:.85rem;color:var(--gold);margin-bottom:8px;font-weight:500}
-.featured-info p{font-size:.82rem;color:var(--cream3);line-height:1.6}
-.featured-price{font-family:'Playfair Display';font-size:1.5rem;font-weight:900;color:var(--gold);margin-top:12px}
+.featured-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:1200px}
+.featured-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:32px;display:flex;align-items:center;gap:24px;transition:all .4s;position:relative;overflow:hidden}
+.featured-card:hover{border-color:var(--card-hover-border);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.featured-icon{font-size:3.5rem;min-width:90px;height:90px;display:flex;align-items:center;justify-content:center;background:var(--bg4);border-radius:14px;flex-shrink:0}
+.featured-info h3{font-family:'Playfair Display';font-size:1.2rem;font-weight:700;margin-bottom:3px}
+.featured-info .sub{font-size:.82rem;color:var(--gold);margin-bottom:8px;font-weight:600}
+.featured-info p{font-size:.8rem;color:var(--text3);line-height:1.6}
 
 /* ═══ GALLERY ═══ */
-.gallery-scroll{
-display:flex;gap:20px;overflow-x:auto;padding-bottom:20px;
-scroll-snap-type:x mandatory;
-}
-.gallery-scroll::-webkit-scrollbar{height:4px}
-.gallery-scroll::-webkit-scrollbar-thumb{background:var(--gold4);border-radius:2px}
-.gallery-card{
-min-width:320px;height:400px;border-radius:20px;
-overflow:hidden;position:relative;scroll-snap-align:start;flex-shrink:0;
-}
-.gallery-bg{position:absolute;inset:0;transition:transform .6s}
-.gallery-card:hover .gallery-bg{transform:scale(1.06)}
-.gallery-overlay{
-position:absolute;inset:0;
-background:linear-gradient(180deg,transparent 30%,rgba(5,5,5,.92));
-display:flex;flex-direction:column;justify-content:flex-end;padding:28px;
-}
-.gallery-overlay h4{font-family:'Playfair Display';font-size:1.3rem;font-weight:700}
-.gallery-overlay p{font-size:.82rem;color:var(--cream3);margin-top:4px}
-.gallery-overlay .gallery-icon{font-size:3rem;margin-bottom:12px}
+.gallery-scroll{display:flex;gap:18px;overflow-x:auto;padding-bottom:16px;scroll-snap-type:x mandatory}
+.gallery-scroll::-webkit-scrollbar{height:4px}.gallery-scroll::-webkit-scrollbar-thumb{background:var(--gold4);border-radius:2px}
+.gallery-card{min-width:300px;height:380px;border-radius:18px;overflow:hidden;position:relative;scroll-snap-align:start;flex-shrink:0}
+.gallery-card img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.gallery-card:hover img{transform:scale(1.06)}
+.gallery-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(0,0,0,.85));display:flex;flex-direction:column;justify-content:flex-end;padding:24px;z-index:1}
+.gallery-overlay h4{font-family:'Playfair Display';font-size:1.2rem;font-weight:700;color:#fff}
+.gallery-overlay p{font-size:.8rem;color:rgba(255,255,255,.7);margin-top:4px}
+.gallery-overlay .gi{font-size:2.5rem;margin-bottom:10px}
 
 /* ═══ REVIEWS ═══ */
-.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1200px}
-.review-card{
-background:var(--bg3);border:1px solid rgba(201,168,76,.05);
-border-radius:20px;padding:32px;transition:all .4s;position:relative;
-}
-.review-card:hover{border-color:rgba(201,168,76,.12);transform:translateY(-4px)}
-.review-stars{color:var(--gold);font-size:1rem;margin-bottom:16px;letter-spacing:2px}
-.review-text{font-size:.9rem;color:var(--cream2);line-height:1.8;margin-bottom:24px;font-style:italic}
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1200px}
+.review-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:28px;transition:all .4s;position:relative}
+.review-card:hover{border-color:var(--card-hover-border);transform:translateY(-4px)}
+.review-stars{color:var(--gold);font-size:.9rem;margin-bottom:14px;letter-spacing:2px}
+.review-text{font-size:.88rem;color:var(--text2);line-height:1.8;margin-bottom:20px;font-style:italic}
 .review-author{display:flex;align-items:center;gap:12px}
-.review-avatar{
-width:44px;height:44px;border-radius:50%;
-background:linear-gradient(135deg,var(--gold3),var(--gold));
-display:flex;align-items:center;justify-content:center;font-size:1.2rem;
-}
-.review-name{font-weight:600;font-size:.9rem}
-.review-role{font-size:.75rem;color:var(--cream3)}
-.review-quote{position:absolute;top:20px;right:24px;font-size:4rem;color:rgba(201,168,76,.08);font-family:'Playfair Display';line-height:1}
+.review-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold3),var(--gold));display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.review-name{font-weight:600;font-size:.88rem}
+.review-role{font-size:.72rem;color:var(--text3)}
+.review-quote{position:absolute;top:18px;right:22px;font-size:3.5rem;color:var(--card-border);font-family:'Playfair Display';line-height:1}
 
-/* ═══ CTA SECTION ═══ */
-.cta-section{
-padding:100px 50px;text-align:center;
-background:
-  radial-gradient(ellipse 80% 50% at 50% 50%,rgba(201,168,76,.06),transparent),
-  var(--bg2);
-border-top:1px solid rgba(201,168,76,.06);
-}
-.cta-title{
-font-family:'Playfair Display';font-size:clamp(2rem,5vw,3.5rem);
-font-weight:900;margin-bottom:16px;
-}
-.cta-sub{color:var(--cream3);font-size:1rem;margin-bottom:40px;max-width:500px;margin-left:auto;margin-right:auto}
+/* ═══ CTA ═══ */
+.cta-section{padding:80px 40px;text-align:center;background:var(--bg2);border-top:1px solid var(--section-border);transition:background .4s}
+.cta-title{font-family:'Playfair Display';font-size:clamp(2rem,5vw,3rem);font-weight:900;margin-bottom:14px}
+.cta-title em{color:var(--gold);font-style:italic;font-weight:400}
+.cta-sub{color:var(--text3);font-size:1rem;margin-bottom:35px;max-width:500px;margin-left:auto;margin-right:auto}
 
 /* ═══ FOOTER ═══ */
-footer{
-padding:60px 50px 30px;
-border-top:1px solid rgba(201,168,76,.06);
-background:var(--bg2);
-}
-.footer-grid{
-display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
-gap:40px;max-width:1200px;margin:0 auto 40px;
-}
-.footer-brand .logo{font-family:'Great Vibes';font-size:2.2rem;color:var(--gold);display:block;margin-bottom:12px}
-.footer-brand p{color:var(--cream3);font-size:.85rem;line-height:1.8;max-width:300px}
-.footer-col h5{
-font-size:.7rem;letter-spacing:3px;color:var(--gold);
-text-transform:uppercase;margin-bottom:18px;font-weight:600;
-}
-.footer-col a{display:block;color:var(--cream3);text-decoration:none;font-size:.85rem;margin-bottom:10px;transition:color .3s}
+footer{padding:50px 40px 25px;border-top:1px solid var(--section-border);background:var(--bg2);transition:background .4s}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:35px;max-width:1200px;margin:0 auto 35px}
+.footer-brand .logo{font-family:'Great Vibes';font-size:2rem;color:var(--gold);display:block;margin-bottom:10px}
+.footer-brand p{color:var(--text3);font-size:.82rem;line-height:1.8;max-width:280px}
+.footer-col h5{font-size:.68rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:15px;font-weight:600}
+.footer-col a{display:block;color:var(--text3);text-decoration:none;font-size:.82rem;margin-bottom:9px;transition:color .3s}
 .footer-col a:hover{color:var(--gold)}
-.footer-social{display:flex;gap:12px;margin-top:16px}
-.footer-social a{
-width:38px;height:38px;border-radius:50%;
-border:1px solid rgba(201,168,76,.12);
-display:flex;align-items:center;justify-content:center;
-color:var(--gold);text-decoration:none;font-size:.9rem;transition:all .3s;
-}
+.footer-social{display:flex;gap:10px;margin-top:14px}
+.footer-social a{width:36px;height:36px;border-radius:50%;border:1px solid var(--card-border);display:flex;align-items:center;justify-content:center;color:var(--gold);text-decoration:none;font-size:.85rem;transition:all .3s}
 .footer-social a:hover{background:var(--gold);color:var(--bg);transform:translateY(-2px)}
-.footer-bottom{
-text-align:center;padding-top:25px;margin-top:20px;
-border-top:1px solid rgba(201,168,76,.05);
-color:var(--cream3);font-size:.75rem;letter-spacing:1px;
-}
+.footer-bottom{text-align:center;padding-top:20px;margin-top:15px;border-top:1px solid var(--section-border);color:var(--text3);font-size:.72rem;letter-spacing:1px}
 
 /* ═══ ANIMATIONS ═══ */
-.reveal{opacity:0;transform:translateY(40px);transition:all .7s cubic-bezier(.23,1,.32,1)}
-.reveal.visible{opacity:1;transform:translateY(0)}
-.card-in{opacity:0;transform:translateY(30px) scale(.97);transition:all .5s cubic-bezier(.23,1,.32,1)}
-.card-in.show{opacity:1;transform:translateY(0) scale(1)}
+.reveal{opacity:0;transform:translateY(40px);transition:all .7s cubic-bezier(.23,1,.32,1)}.reveal.visible{opacity:1;transform:translateY(0)}
+.card-in{opacity:0;transform:translateY(30px) scale(.97);transition:all .5s cubic-bezier(.23,1,.32,1)}.card-in.show{opacity:1;transform:translateY(0) scale(1)}
 
 /* ═══ RESPONSIVE ═══ */
 @media(max-width:900px){
-.nav-links{display:none}
-section{padding:60px 20px}
-.menu-grid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
-.featured-grid{grid-template-columns:1fr}
-.reviews-grid{grid-template-columns:1fr}
-.footer-grid{grid-template-columns:1fr 1fr}
-.stats-grid{grid-template-columns:repeat(2,1fr)}
+.nav-links{display:none}.mobile-toggle{display:block}
+section{padding:50px 20px}
+.menu-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.featured-grid{grid-template-columns:1fr}.reviews-grid{grid-template-columns:1fr}
+.footer-grid{grid-template-columns:1fr 1fr}.stats-grid{grid-template-columns:repeat(2,1fr)}
 .stat:nth-child(2)::after{display:none}
 }
-@media(max-width:600px){
-.menu-grid{grid-template-columns:1fr}
-.footer-grid{grid-template-columns:1fr}
-nav{padding:14px 20px}
-}
+@media(max-width:600px){.menu-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}nav{padding:12px 16px}.nav-cta{display:none}}
 </style>
 </head>
 <body>
-
 <div class="cursor-glow" id="cursorGlow"></div>
+<div id="loader"><div class="loader-cup">☕</div><div class="loader-text">ROAST</div><div class="loader-bar"><div class="loader-fill"></div></div></div>
 
-<!-- LOADER -->
-<div id="loader">
-  <div class="loader-cup"></div>
-  <div class="loader-text">ROAST</div>
-  <div class="loader-bar"><div class="loader-fill"></div></div>
-</div>
-
-<!-- NAV -->
 <nav id="nav">
-  <a href="#" class="nav-logo">Roast Café</a>
+  <a href="#" class="logo nav-logo">Roast Café</a>
   <ul class="nav-links">
-    <li><a href="#menu">Menu</a></li>
-    <li><a href="#specials">Specials</a></li>
-    <li><a href="#gallery">Gallery</a></li>
-    <li><a href="#reviews">Reviews</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#menu" data-en="Menu" data-ar="القائمة">Menu</a></li>
+    <li><a href="#specials" data-en="Specials" data-ar="مميز">Specials</a></li>
+    <li><a href="#gallery" data-en="Gallery" data-ar="المعرض">Gallery</a></li>
+    <li><a href="#reviews" data-en="Reviews" data-ar="التقييمات">Reviews</a></li>
+    <li><a href="#contact" data-en="Contact" data-ar="تواصل">Contact</a></li>
   </ul>
-  <button class="nav-cta" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">Order Now</button>
+  <div class="nav-actions">
+    <button class="lang-btn" id="langBtn" title="Toggle Language">EN</button>
+    <button class="theme-btn" id="themeBtn" title="Toggle Theme">☀</button>
+    <button class="mobile-toggle" id="mobileToggle">☰</button>
+  </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero" id="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-lines"></div>
-  <div class="hero-particles" id="heroParticles"></div>
+  <div class="hero-bg"></div><div class="hero-lines"></div><div class="hero-particles" id="heroParticles"></div>
   <div class="hero-content">
-    <div class="hero-badge"><span class="dot"></span> Premium Coffee Experience — Est. 2014</div>
-    <h1 class="hero-title">
-      <span class="line1">ROAST</span>
-      <span class="line2">Café</span>
-    </h1>
-    <p class="hero-sub">Where every cup tells a story. 100+ handcrafted drinks & gourmet bites — made with passion.</p>
+    <div class="hero-badge"><span class="dot"></span> <span data-en="Premium Coffee Experience — Est. 2014" data-ar="تجربة قهوة فاخرة — منذ 2014">Premium Coffee Experience — Est. 2014</span></div>
+    <h1 class="hero-title"><span class="l1">ROAST</span><span class="l2">Café</span></h1>
+    <p class="hero-sub" data-en="Where every cup tells a story. 100+ handcrafted drinks & gourmet bites — made with passion." data-ar="حيث كل كوب يروي قصة. أكثر من 100 مشروب يدوي ووجبة مميزة — مصنوعة بشغف.">Where every cup tells a story. 100+ handcrafted drinks & gourmet bites — made with passion.</p>
     <div class="hero-buttons">
-      <a href="#menu" class="btn-primary">Explore Menu →</a>
-      <a href="#specials" class="btn-secondary">Chef's Picks ✦</a>
+      <a href="#menu" class="btn-primary"><span data-en="Explore Menu →" data-ar="اكتشف القائمة →">Explore Menu →</span></a>
+      <a href="#specials" class="btn-secondary"><span data-en="Chef's Picks ✦" data-ar="اختيارات الشيف ✦">Chef's Picks ✦</span></a>
     </div>
   </div>
-  <div class="hero-scroll">
-    <div class="scroll-line"></div>
-    SCROLL
-  </div>
+  <div class="hero-scroll"><div class="sl"></div>SCROLL</div>
 </section>
 
-<!-- STATS -->
 <div class="stats-section reveal">
   <div class="stats-grid">
-    <div class="stat"><div class="stat-num"><span data-count="25">0</span><span class="stat-suffix">K+</span></div><div class="stat-label">Cups Served</div></div>
-    <div class="stat"><div class="stat-num"><span data-count="100">0</span><span class="stat-suffix">+</span></div><div class="stat-label">Menu Items</div></div>
-    <div class="stat"><div class="stat-num"><span data-count="4.9">0</span><span class="stat-suffix">★</span></div><div class="stat-label">Avg Rating</div></div>
-    <div class="stat"><div class="stat-num"><span data-count="12">0</span><span class="stat-suffix">+</span></div><div class="stat-label">Years Experience</div></div>
+    <div class="stat"><div class="stat-num"><span data-count="25">0</span><span class="stat-suffix">K+</span></div><div class="stat-label" data-en="Cups Served" data-ar="كوب تم تقديمه">Cups Served</div></div>
+    <div class="stat"><div class="stat-num"><span data-count="100">0</span><span class="stat-suffix">+</span></div><div class="stat-label" data-en="Menu Items" data-ar="عنصر في القائمة">Menu Items</div></div>
+    <div class="stat"><div class="stat-num"><span data-count="4.9">0</span><span class="stat-suffix">★</span></div><div class="stat-label" data-en="Avg Rating" data-ar="متوسط التقييم">Avg Rating</div></div>
+    <div class="stat"><div class="stat-num"><span data-count="12">0</span><span class="stat-suffix">+</span></div><div class="stat-label" data-en="Years" data-ar="سنوات">Years</div></div>
   </div>
 </div>
 
-<!-- MENU -->
 <section id="menu">
   <div class="section-header reveal">
-    <div class="section-overline">The Menu</div>
-    <h2 class="section-title">Explore Our <em>Collection</em></h2>
-    <p class="section-subtitle">100+ handcrafted items — from classic brews to innovative creations.</p>
+    <div class="section-overline" data-en="THE MENU" data-ar="القائمة">THE MENU</div>
+    <h2 class="section-title" data-en="Explore Our <em>Collection</em>" data-ar="اكتشف <em>تشكيلتنا</em>">Explore Our <em>Collection</em></h2>
+    <p class="section-subtitle" data-en="100+ handcrafted items — from classic brews to innovative creations." data-ar="أكثر من 100 منتج يدوي — من الوصفات الكلاسيكية إلى الإبداعات الحديثة.">100+ handcrafted items — from classic brews to innovative creations.</p>
   </div>
   <div class="filter-wrap" id="filterWrap"></div>
   <div class="menu-grid" id="menuGrid"></div>
 </section>
 
-<!-- SPECIALS -->
 <section id="specials">
   <div class="section-header reveal">
-    <div class="section-overline">Chef's Picks</div>
-    <h2 class="section-title">Our <em>Finest</em> Selections</h2>
+    <div class="section-overline" data-en="CHEF'S PICKS" data-ar="اختيارات الشيف">CHEF'S PICKS</div>
+    <h2 class="section-title" data-en="Our <em>Finest</em> Selections" data-ar="أفضل <em>اختياراتنا</em>">Our <em>Finest</em> Selections</h2>
   </div>
   <div class="featured-grid" id="featuredGrid"></div>
 </section>
 
-<!-- GALLERY -->
 <section id="gallery">
   <div class="section-header reveal">
-    <div class="section-overline">Gallery</div>
-    <h2 class="section-title">Moments of <em>Royalty</em></h2>
+    <div class="section-overline" data-en="GALLERY" data-ar="المعرض">GALLERY</div>
+    <h2 class="section-title" data-en="Moments of <em>Royalty</em>" data-ar="لحظات <em>ملكية</em>">Moments of <em>Royalty</em></h2>
   </div>
   <div class="gallery-scroll reveal" id="galleryScroll"></div>
 </section>
 
-<!-- REVIEWS -->
 <section id="reviews">
   <div class="section-header reveal">
-    <div class="section-overline">Reviews</div>
-    <h2 class="section-title">What People <em>Say</em></h2>
+    <div class="section-overline" data-en="REVIEWS" data-ar="التقييمات">REVIEWS</div>
+    <h2 class="section-title" data-en="What People <em>Say</em>" data-ar="الناس <em>بتقول</em> ايه">What People <em>Say</em></h2>
   </div>
   <div class="reviews-grid" id="reviewsGrid"></div>
 </section>
 
-<!-- CTA -->
 <div class="cta-section">
-  <h2 class="cta-title reveal">Ready to Taste <em style="color:var(--gold);font-style:italic">Excellence</em>?</h2>
-  <p class="cta-sub reveal">Visit us today and discover why thousands choose ROAST as their daily coffee destination.</p>
-  <a href="#menu" class="btn-primary reveal">View Full Menu →</a>
+  <h2 class="cta-title reveal" data-en="Ready to Taste <em>Excellence</em>?" data-ar="مستعد تذوق <em>التميز</em>؟">Ready to Taste <em>Excellence</em>?</h2>
+  <p class="cta-sub reveal" data-en="Visit us today and discover why thousands choose ROAST as their daily coffee destination." data-ar="ziرونا النهارده واكتشف ليه آلاف بيخترعوا ROAST ك وجهة قهوتهم اليومية.">Visit us today and discover why thousands choose ROAST as their daily coffee destination.</p>
+  <a href="#menu" class="btn-primary reveal"><span data-en="View Full Menu →" data-ar="شوف القائمة كاملة →">View Full Menu →</span></a>
 </div>
 
-<!-- FOOTER -->
 <footer id="contact">
   <div class="footer-grid">
     <div class="footer-brand">
       <span class="logo">Roast Café</span>
-      <p>Where every sip tells a story. Premium coffee experience since 2014. Crafted with passion, served with love.</p>
-      <div class="footer-social">
-        <a href="#">📷</a><a href="#">🐦</a><a href="#">📘</a><a href="#">🎵</a>
-      </div>
+      <p data-en="Where every sip tells a story. Premium coffee since 2014." data-ar="حيث كل رشفة بتحكي قصة. قهوة فاخرة من سنة 2014.">Where every sip tells a story. Premium coffee since 2014.</p>
+      <div class="footer-social"><a href="#">📷</a><a href="#">🐦</a><a href="#">📘</a><a href="#">🎵</a></div>
     </div>
     <div class="footer-col">
-      <h5>Quick Links</h5>
-      <a href="#menu">Menu</a>
-      <a href="#specials">Specials</a>
-      <a href="#gallery">Gallery</a>
-      <a href="#reviews">Reviews</a>
+      <h5 data-en="Quick Links" data-ar="روابط سريعة">Quick Links</h5>
+      <a href="#menu" data-en="Menu" data-ar="القائمة">Menu</a>
+      <a href="#specials" data-en="Specials" data-ar="مميز">Specials</a>
+      <a href="#gallery" data-en="Gallery" data-ar="المعرض">Gallery</a>
+      <a href="#reviews" data-en="Reviews" data-ar="التقييمات">Reviews</a>
     </div>
     <div class="footer-col">
-      <h5>Hours</h5>
-      <a href="#">Sun — Thu: 7AM – 12AM</a>
-      <a href="#">Fri — Sat: 8AM – 2AM</a>
-      <a href="#">Delivery Available</a>
+      <h5 data-en="Hours" data-ar="المواعيد">Hours</h5>
+      <a href="#" data-en="Sun — Thu: 7AM – 12AM" data-ar="الأحد — الخميس: 7 صباحاً – 12 مساءً">Sun — Thu: 7AM – 12AM</a>
+      <a href="#" data-en="Fri — Sat: 8AM – 2AM" data-ar="الجمعة — السبت: 8 صباحاً – 2 فجراً">Fri — Sat: 8AM – 2AM</a>
+      <a href="#" data-en="Delivery Available" data-ar="توصيل متاح">Delivery Available</a>
     </div>
     <div class="footer-col">
-      <h5>Contact</h5>
+      <h5 data-en="Contact" data-ar="التواصل">Contact</h5>
       <a href="tel:+201234567890">📞 +20 123 456 7890</a>
-      <a href="#">📍 Cairo, Egypt</a>
+      <a href="#" data-en="📍 Cairo, Egypt" data-ar="📍 القاهرة، مصر">📍 Cairo, Egypt</a>
       <a href="#">✉️ hello@roastcafe.com</a>
     </div>
   </div>
@@ -543,199 +317,150 @@ nav{padding:14px 20px}
 </footer>
 
 <script>
-const BG={
-espresso:'linear-gradient(135deg,#2c1810,#1a0f08)',latte:'linear-gradient(135deg,#3d2317,#261510)',
-cold:'linear-gradient(135deg,#0c2d4a,#081c33)',smoothie:'linear-gradient(135deg,#1a4a2a,#0d2e18)',
-tea:'linear-gradient(135deg,#2a3a1a,#1a2a10)',pastry:'linear-gradient(135deg,#4a2a1a,#2e1a0e)',
-sandwich:'linear-gradient(135deg,#3a3a1a,#252510)',salad:'linear-gradient(135deg,#1a4a1a,#0e2e0e)',
-dessert:'linear-gradient(135deg,#3a1a3a,#220e22)',special:'linear-gradient(135deg,#4a3a0a,#2e2406)',
+const IMG={
+espresso:'https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?w=600&h=400&fit=crop',
+latte:'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=600&h=400&fit=crop',
+cold:'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&h=400&fit=crop',
+smoothie:'https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=600&h=400&fit=crop',
+tea:'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=600&h=400&fit=crop',
+pastry:'https://images.unsplash.com/photo-1555507036-ab1f4038024a?w=600&h=400&fit=crop',
+sandwich:'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&h=400&fit=crop',
+salad:'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=400&fit=crop',
+dessert:'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600&h=400&fit=crop',
 };
-const E={
-espresso:'☕',latte:'🥛',cold:'🧊',smoothie:'🥤',tea:'🍵',
-pastry:'🥐',sandwich:'🥪',salad:'🥗',dessert:'🍰',special:'⭐',
+const IMGS={
+espresso:['photo-1510707577719-ae7c14805e3a','photo-1509042239860-f550ce710b93','photo-1485808191679-5f86510681a2'],
+latte:['photo-1572442388796-11668a67e53d','photo-1461023058943-07fcbe16d735','photo-1534778101976-62847782c213'],
+cold:['photo-1461023058943-07fcbe16d735','photo-1517701550927-30cf4ba1dba5','photo-1592663527359-cf6642f54cff'],
+smoothie:['photo-1553530666-ba11a7da3888','photo-1623065422902-30a2d299bbe4','photo-1610970881699-44a5587cabec'],
+tea:['photo-1564890369478-c89ca6d9cde9','photo-1597318181409-cf64d0b5d8a2','photo-1556679343-c7306c1976bc'],
+pastry:['photo-1555507036-ab1f4038024a','photo-1509365390695-33aee754301f','photo-1558961363-fa8fdf82db35'],
+sandwich:['photo-1528735602780-2552fd46c7af','photo-1553979459-d2229ba7433b','photo-1539252554453-80ab60641cdb'],
+salad:['photo-1512621776951-a57141f2eefd','photo-1540420773420-3366772f4999','photo-1546793665-c74683f339c1'],
+dessert:['photo-1551024506-0bccd828d307','photo-1551024601-bec78aea704b','photo-1488477181946-6428a0291777'],
 };
+const E={espresso:'☕',latte:'🥛',cold:'🧊',smoothie:'🥤',tea:'🍵',pastry:'🥐',sandwich:'🥪',salad:'🥗',dessert:'🍰'};
+
+let lang='ar',theme='dark',activeCat='all';
 
 const items=[
-// ESPRESSO (1-15)
-{id:1,cat:'espresso',name:'Classic Espresso',desc:'Single origin Ethiopian beans. Rich crema, bold flavor.',price:45,rating:4.9,reviews:892,tag:''},
-{id:2,cat:'espresso',name:'Double Espresso',desc:'Double shot for an extra kick. Pure coffee power.',price:55,rating:4.8,reviews:654,tag:''},
-{id:3,cat:'espresso',name:'Americano',desc:'Espresso diluted with hot water. Clean and smooth.',price:50,rating:4.7,reviews:723,tag:''},
-{id:4,cat:'espresso',name:'Long Black',desc:'Double espresso with hot water on top. Preserves crema.',price:55,rating:4.6,reviews:345,tag:''},
-{id:5,cat:'espresso',name:'Ristretto',desc:'Short, concentrated shot. Intense and aromatic.',price:50,rating:4.8,reviews:289,tag:''},
-{id:6,cat:'espresso',name:'Lungo',desc:'Long extraction espresso. Bitter-sweet finish.',price:50,rating:4.5,reviews:210,tag:''},
-{id:7,cat:'espresso',name:'Con Panna',desc:'Espresso with whipped cream. Rich and indulgent.',price:60,rating:4.7,reviews:312,tag:''},
-{id:8,cat:'espresso',name:'Red Eye',desc:'Drip coffee with espresso. Maximum caffeine boost.',price:60,rating:4.6,reviews:267,tag:''},
-{id:9,cat:'espresso',name:'Black Eye',desc:'Drip coffee with double espresso. For serious lovers.',price:70,rating:4.7,reviews:198,tag:''},
-{id:10,cat:'espresso',name:'Dead Eye',desc:'Triple shot in drip coffee. Maximum power.',price:80,rating:4.8,reviews:145,tag:'hot'},
-{id:11,cat:'espresso',name:'Espresso Romano',desc:'Espresso with lemon zest. Citrusy kick.',price:55,rating:4.5,reviews:178,tag:''},
-{id:12,cat:'espresso',name:'Affogato',desc:'Espresso over vanilla gelato. Dessert meets coffee.',price:75,rating:4.9,reviews:456,tag:'chef'},
-{id:13,cat:'espresso',name:'Espresso Tonic',desc:'Cold espresso over tonic water. Refreshing.',price:70,rating:4.7,reviews:321,tag:'new'},
-{id:14,cat:'espresso',name:'Marocchino',desc:'Espresso with cocoa and frothed milk.',price:65,rating:4.6,reviews:189,tag:''},
-{id:15,cat:'espresso',name:'Barley Coffee',desc:'Traditional Middle Eastern barley coffee.',price:40,rating:4.4,reviews:234,tag:''},
-
-// LATTES (16-30)
-{id:16,cat:'latte',name:'Classic Latte',desc:'Smooth espresso with steamed milk. Perfect balance.',price:70,rating:4.9,reviews:1203,tag:'hot'},
-{id:17,cat:'latte',name:'Cappuccino',desc:'Espresso with thick foam. Italian tradition.',price:65,rating:4.8,reviews:987,tag:'hot'},
-{id:18,cat:'latte',name:'Flat White',desc:'Microfoam over double ristretto. Velvety.',price:75,rating:4.8,reviews:567,tag:''},
-{id:19,cat:'latte',name:'Mocha',desc:'Espresso, chocolate, steamed milk. Pure delight.',price:80,rating:4.8,reviews:834,tag:''},
-{id:20,cat:'latte',name:'Caramel Macchiato',desc:'Vanilla milk with caramel and espresso.',price:85,rating:4.9,reviews:945,tag:'hot'},
-{id:21,cat:'latte',name:'Vanilla Latte',desc:'Espresso with vanilla syrup and steamed milk.',price:80,rating:4.7,reviews:678,tag:''},
-{id:22,cat:'latte',name:'Hazelnut Latte',desc:'Nutty hazelnut in creamy latte.',price:80,rating:4.7,reviews:543,tag:''},
-{id:23,cat:'latte',name:'Coconut Latte',desc:'Coconut milk latte. Tropical twist.',price:85,rating:4.8,reviews:432,tag:''},
-{id:24,cat:'latte',name:'Oat Milk Latte',desc:'Creamy oat milk. Dairy-free perfection.',price:90,rating:4.8,reviews:567,tag:'veg'},
-{id:25,cat:'latte',name:'Almond Latte',desc:'Light almond milk with subtle nuttiness.',price:90,rating:4.7,reviews:345,tag:'veg'},
-{id:26,cat:'latte',name:'Soy Latte',desc:'Soy milk latte. Creamy and plant-based.',price:85,rating:4.6,reviews:234,tag:'veg'},
-{id:27,cat:'latte',name:'Honey Cinnamon Latte',desc:'Warm latte with honey and cinnamon.',price:80,rating:4.7,reviews:456,tag:''},
-{id:28,cat:'latte',name:'Rose Latte',desc:'Delicate rose-infused latte. Floral elegance.',price:85,rating:4.8,reviews:389,tag:'new'},
-{id:29,cat:'latte',name:'Lavender Latte',desc:'Lavender-scented. Calming and aromatic.',price:85,rating:4.7,reviews:298,tag:'new'},
-{id:30,cat:'latte',name:'Matcha Latte',desc:'Ceremonial matcha with steamed milk.',price:90,rating:4.8,reviews:678,tag:''},
-
-// COLD (31-50)
-{id:31,cat:'cold',name:'Iced Latte',desc:'Espresso with cold milk over ice.',price:75,rating:4.7,reviews:876,tag:''},
-{id:32,cat:'cold',name:'Iced Americano',desc:'Espresso with cold water and ice.',price:55,rating:4.6,reviews:654,tag:''},
-{id:33,cat:'cold',name:'Cold Brew',desc:'Steeped 18 hours. Smooth and refreshing.',price:70,rating:4.9,reviews:1102,tag:'hot'},
-{id:34,cat:'cold',name:'Nitro Cold Brew',desc:'Nitrogen-infused. Cascading and creamy.',price:85,rating:4.9,reviews:789,tag:'chef'},
-{id:35,cat:'cold',name:'Iced Mocha',desc:'Espresso, chocolate, cold milk, ice.',price:85,rating:4.8,reviews:654,tag:''},
-{id:36,cat:'cold',name:'Iced Caramel Macchiato',desc:'Chilled caramel macchiato over ice.',price:90,rating:4.8,reviews:543,tag:''},
-{id:37,cat:'cold',name:'Frappuccino',desc:'Blended coffee with milk, ice, cream.',price:95,rating:4.7,reviews:876,tag:''},
-{id:38,cat:'cold',name:'Mocha Frappuccino',desc:'Chocolate blended coffee. Frozen indulgence.',price:100,rating:4.8,reviews:654,tag:''},
-{id:39,cat:'cold',name:'Caramel Frappuccino',desc:'Caramel blended with coffee and cream.',price:100,rating:4.8,reviews:789,tag:''},
-{id:40,cat:'cold',name:'Iced Matcha Latte',desc:'Chilled matcha with cold milk.',price:95,rating:4.7,reviews:432,tag:''},
-{id:41,cat:'cold',name:'Iced Chai Latte',desc:'Spiced chai over ice with cold milk.',price:85,rating:4.7,reviews:345,tag:''},
-{id:42,cat:'cold',name:'Vietnamese Iced Coffee',desc:'Strong dark roast with condensed milk.',price:75,rating:4.9,reviews:567,tag:'hot'},
-{id:43,cat:'cold',name:'Thai Iced Tea',desc:'Sweet orange tea with condensed milk.',price:65,rating:4.7,reviews:432,tag:''},
-{id:44,cat:'cold',name:'Spanish Latte',desc:'Espresso with condensed milk. Creamy.',price:80,rating:4.8,reviews:678,tag:''},
-{id:45,cat:'cold',name:'White Chocolate Mocha',desc:'White chocolate mocha over ice.',price:95,rating:4.7,reviews:321,tag:''},
-{id:46,cat:'cold',name:'Salted Caramel Cold Brew',desc:'Cold brew with salted caramel.',price:85,rating:4.9,reviews:543,tag:'new'},
-{id:47,cat:'cold',name:'Iced Flat White',desc:'Cold version of velvety flat white.',price:80,rating:4.7,reviews:234,tag:''},
-{id:48,cat:'cold',name:'Cold Brew Lemonade',desc:'Cold brew mixed with fresh lemonade.',price:75,rating:4.6,reviews:189,tag:'new'},
-{id:49,cat:'cold',name:'Honey Lavender Cold Brew',desc:'Floral lavender cold brew with honey.',price:90,rating:4.8,reviews:278,tag:'new'},
-{id:50,cat:'cold',name:'Coconut Cold Brew',desc:'Cold brew with coconut cream and flakes.',price:85,rating:4.7,reviews:345,tag:''},
-
-// SMOOTHIES (51-60)
-{id:51,cat:'smoothie',name:'Mango Tango',desc:'Fresh mango, banana, and passion fruit.',price:85,rating:4.8,reviews:567,tag:''},
-{id:52,cat:'smoothie',name:'Berry Blast',desc:'Mixed berries with yogurt and honey.',price:90,rating:4.8,reviews:678,tag:''},
-{id:53,cat:'smoothie',name:'Green Goddess',desc:'Spinach, banana, apple, ginger.',price:85,rating:4.7,reviews:432,tag:'veg'},
-{id:54,cat:'smoothie',name:'Tropical Sunrise',desc:'Pineapple, mango, banana, coconut milk.',price:90,rating:4.8,reviews:345,tag:''},
-{id:55,cat:'smoothie',name:'Peanut Butter Power',desc:'Banana, peanut butter, oat milk, protein.',price:95,rating:4.7,reviews:289,tag:''},
-{id:56,cat:'smoothie',name:'Açaí Bowl',desc:'Frozen açaí with granola and fresh fruits.',price:110,rating:4.9,reviews:789,tag:'hot'},
-{id:57,cat:'smoothie',name:'Pitaya Bowl',desc:'Dragon fruit with coconut and berries.',price:110,rating:4.8,reviews:456,tag:'new'},
-{id:58,cat:'smoothie',name:'Fresh Orange Juice',desc:'Freshly squeezed orange juice.',price:55,rating:4.6,reviews:890,tag:''},
-{id:59,cat:'smoothie',name:'Lemon Mint Cooler',desc:'Fresh lemon, mint, honey over ice.',price:50,rating:4.7,reviews:567,tag:''},
-{id:60,cat:'smoothie',name:'Watermelon Juice',desc:'Refreshing chilled watermelon juice.',price:45,rating:4.5,reviews:345,tag:''},
-
-// TEA (61-75)
-{id:61,cat:'tea',name:'English Breakfast',desc:'Classic black tea blend. Bold and malty.',price:40,rating:4.6,reviews:567,tag:''},
-{id:62,cat:'tea',name:'Earl Grey',desc:'Bergamot-scented black tea.',price:40,rating:4.7,reviews:456,tag:''},
-{id:63,cat:'tea',name:'Green Tea',desc:'Light Japanese green tea.',price:35,rating:4.5,reviews:789,tag:''},
-{id:64,cat:'tea',name:'Jasmine Green Tea',desc:'Fragrant jasmine green tea.',price:40,rating:4.7,reviews:345,tag:''},
-{id:65,cat:'tea',name:'Chamomile Tea',desc:'Soothing chamomile flowers.',price:35,rating:4.8,reviews:456,tag:''},
-{id:66,cat:'tea',name:'Peppermint Tea',desc:'Refreshing peppermint leaves.',price:35,rating:4.6,reviews:567,tag:''},
-{id:67,cat:'tea',name:'Moroccan Mint Tea',desc:'Traditional Moroccan mint tea.',price:45,rating:4.9,reviews:678,tag:'hot'},
-{id:68,cat:'tea',name:'Hot Chocolate',desc:'Premium Belgian chocolate. Pure comfort.',price:65,rating:4.9,reviews:901,tag:'hot'},
-{id:69,cat:'tea',name:'White Hot Chocolate',desc:'Creamy white chocolate in warm milk.',price:65,rating:4.7,reviews:345,tag:''},
-{id:70,cat:'tea',name:'Turkish Coffee',desc:'Traditional Turkish coffee with cardamom.',price:50,rating:4.9,reviews:1023,tag:'hot'},
-{id:71,cat:'tea',name:'Arabic Coffee',desc:'Light roasted Arabic coffee with cardamom.',price:45,rating:4.8,reviews:890,tag:''},
-{id:72,cat:'tea',name:'Ginger Honey Tea',desc:'Fresh ginger with honey and lemon.',price:45,rating:4.7,reviews:456,tag:''},
-{id:73,cat:'tea',name:'Turmeric Latte',desc:'Golden milk with turmeric and spices.',price:70,rating:4.7,reviews:345,tag:'veg'},
-{id:74,cat:'tea',name:'Hibiscus Tea',desc:'Refreshing karkadeh served hot or cold.',price:40,rating:4.8,reviews:567,tag:''},
-{id:75,cat:'tea',name:'Sahlab',desc:'Warm traditional Middle Eastern milk drink.',price:55,rating:4.8,reviews:678,tag:''},
-
-// PASTRIES (76-85)
-{id:76,cat:'pastry',name:'Butter Croissant',desc:'Flaky, buttery French croissant.',price:45,rating:4.8,reviews:1234,tag:'hot'},
-{id:77,cat:'pastry',name:'Pain au Chocolat',desc:'Chocolate-filled croissant.',price:50,rating:4.8,reviews:890,tag:''},
-{id:78,cat:'pastry',name:'Almond Croissant',desc:'Almond cream filled, sliced almonds.',price:55,rating:4.9,reviews:678,tag:'chef'},
-{id:79,cat:'pastry',name:'Cinnamon Roll',desc:'Soft cinnamon swirl, cream cheese frosting.',price:50,rating:4.7,reviews:789,tag:''},
-{id:80,cat:'pastry',name:'Danish Pastry',desc:'Flaky pastry with custard and fruit.',price:50,rating:4.6,reviews:456,tag:''},
-{id:81,cat:'pastry',name:'Muffin',desc:'Blueberry, chocolate chip, or banana nut.',price:40,rating:4.6,reviews:567,tag:''},
-{id:82,cat:'pastry',name:'Scone',desc:'British-style scone with jam and cream.',price:45,rating:4.5,reviews:345,tag:''},
-{id:83,cat:'pastry',name:'Bagel & Cream Cheese',desc:'Toasted bagel with cream cheese.',price:50,rating:4.7,reviews:678,tag:''},
-{id:84,cat:'pastry',name:'Focaccia',desc:'Italian flatbread with olive oil.',price:55,rating:4.6,reviews:234,tag:''},
-{id:85,cat:'pastry',name:'Brioche',desc:'Soft, buttery French bread.',price:40,rating:4.7,reviews:456,tag:''},
-
-// SANDWICHES (86-92)
-{id:86,cat:'sandwich',name:'Avocado Toast',desc:'Sourdough, smashed avocado, poached egg.',price:95,rating:4.9,reviews:1567,tag:'hot'},
-{id:87,cat:'sandwich',name:'Club Sandwich',desc:'Triple decker: grilled chicken, bacon, lettuce.',price:110,rating:4.8,reviews:890,tag:''},
-{id:88,cat:'sandwich',name:'Croissant Sandwich',desc:'Buttery croissant with ham and cheese.',price:85,rating:4.7,reviews:678,tag:''},
-{id:89,cat:'sandwich',name:'Grilled Cheese',desc:'Classic grilled cheese. Melty perfection.',price:70,rating:4.6,reviews:567,tag:''},
-{id:90,cat:'sandwich',name:'Panini',desc:'Pressed turkey, pesto, mozzarella.',price:95,rating:4.7,reviews:456,tag:''},
-{id:91,cat:'sandwich',name:'Eggs Benedict',desc:'Poached eggs, hollandaise, English muffin.',price:115,rating:4.9,reviews:789,tag:'chef'},
-{id:92,cat:'sandwich',name:'BLT Sandwich',desc:'Bacon, lettuce, tomato on sourdough.',price:85,rating:4.6,reviews:345,tag:''},
-
-// SALADS (93-95)
-{id:93,cat:'salad',name:'Caesar Salad',desc:'Romaine, parmesan, croutons, house dressing.',price:85,rating:4.7,reviews:678,tag:''},
-{id:94,cat:'salad',name:'Greek Salad',desc:'Tomatoes, cucumber, olives, feta.',price:80,rating:4.7,reviews:567,tag:''},
-{id:95,cat:'salad',name:'Quinoa Bowl',desc:'Quinoa, roasted vegetables, tahini.',price:95,rating:4.8,reviews:345,tag:'veg'},
-
-// DESSERTS (96-100)
-{id:96,cat:'dessert',name:'Tiramisu',desc:'Mascarpone, espresso, cocoa. Heavenly.',price:95,rating:4.9,reviews:1345,tag:'hot'},
-{id:97,cat:'dessert',name:'Crème Brûlée',desc:'Vanilla custard, caramelized sugar crust.',price:100,rating:4.8,reviews:678,tag:''},
-{id:98,cat:'dessert',name:'Cheesecake',desc:'New York style with berry compote.',price:90,rating:4.8,reviews:890,tag:''},
-{id:99,cat:'dessert',name:'Chocolate Lava Cake',desc:'Warm cake, molten center, ice cream.',price:105,rating:4.9,reviews:1023,tag:'chef'},
-{id:100,cat:'dessert',name:'Baklava',desc:'Phyllo layers, pistachios, honey syrup.',price:75,rating:4.9,reviews:1567,tag:'hot'},
+{id:1,cat:'espresso',en:'Classic Espresso',ar:'إسبريسو كلاسيكي',desc_en:'Single origin Ethiopian beans. Rich crema, bold flavor.',desc_ar:'حبوب إثيوبية أصل واحد. كريما غنية، طعم قوي.',price:45,rating:4.9,reviews:892,tag:''},
+{id:2,cat:'espresso',name:'Double Espresso',en:'Double Espresso',ar:'دبل إسبريسو',desc_en:'Double shot for an extra kick. Pure coffee power.',desc_ar:'دبل شوت للقوة الإضافية. قهوة نقية.',price:55,rating:4.8,reviews:654,tag:''},
+{id:3,cat:'espresso',en:'Americano',ar:'أمريكانو',desc_en:'Espresso diluted with hot water. Clean and smooth.',desc_ar:'إسبريسو مخفف بمي سخنة. نظيف وناعم.',price:50,rating:4.7,reviews:723,tag:''},
+{id:4,cat:'espresso',en:'Long Black',ar:'لونج بلاك',desc_en:'Double espresso with hot water. Preserves crema.',desc_ar:'دبل إسبريسو مع مي سخنة. يحتفظ بالكريما.',price:55,rating:4.6,reviews:345,tag:''},
+{id:5,cat:'espresso',en:'Ristretto',ar:'ريستريتو',desc_en:'Short concentrated shot. Intense and aromatic.',desc_ar:'شوت قصير ومركّز. قوي وعطر.',price:50,rating:4.8,reviews:289,tag:''},
+{id:6,cat:'espresso',en:'Con Panna',ar:'كون بانا',desc_en:'Espresso with whipped cream. Rich indulgence.',desc_ar:'إسبريسو مع كريمة مخفوقة. تلذذ غني.',price:60,rating:4.7,reviews:312,tag:''},
+{id:7,cat:'espresso',en:'Red Eye',ar:'ريد آي',desc_en:'Drip coffee with espresso. Maximum caffeine.',desc_ar:'قهوة دروب مع إسبريسو. أقصى كافيين.',price:60,rating:4.6,reviews:267,tag:''},
+{id:8,cat:'espresso',en:'Affogato',ar:'أفوجاتو',desc_en:'Espresso over vanilla gelato. Dessert meets coffee.',desc_ar:'إسبريسو على جيلاتو فانيلا. حلوة وقهوة.',price:75,rating:4.9,reviews:456,tag:'chef'},
+{id:9,cat:'espresso',en:'Espresso Tonic',ar:'إسبريسو تونيك',desc_en:'Cold espresso over tonic. Refreshing and unique.',desc_ar:'إسبريسو بارد على تونيك. منعش وفريد.',price:70,rating:4.7,reviews:321,tag:'new'},
+{id:10,cat:'espresso',en:'Barley Coffee',ar:'قهوة شعير',desc_en:'Traditional Middle Eastern barley coffee.',desc_ar:'قهوة شعير شرق أوسطية تقليدية.',price:40,rating:4.4,reviews:234,tag:''},
+{id:11,cat:'latte',en:'Classic Latte',ar:'لاتيه كلاسيكي',desc_en:'Smooth espresso with steamed milk. Perfect balance.',desc_ar:'إسبريسو ناعم مع حليب بخاري. توازن مثالي.',price:70,rating:4.9,reviews:1203,tag:'hot'},
+{id:12,cat:'latte',en:'Cappuccino',ar:'كابوتشينو',desc_en:'Espresso with thick foam. Italian tradition.',desc_ar:'إسبريسو مع رغوة كثيفة. تقاليد إيطالية.',price:65,rating:4.8,reviews:987,tag:'hot'},
+{id:13,cat:'latte',en:'Flat White',ar:'فلايت وايت',desc_en:'Microfoam over double ristretto. Velvety.',desc_ar:'رغوة دقيقة فوق دبل ريستريتو. ناعم.',price:75,rating:4.8,reviews:567,tag:''},
+{id:14,cat:'latte',en:'Mocha',ar:'موكا',desc_en:'Espresso, chocolate, steamed milk. Pure delight.',desc_ar:'إسبريسو، شوكولاتة، حليب بخاري. متعة نقية.',price:80,rating:4.8,reviews:834,tag:''},
+{id:15,cat:'latte',en:'Caramel Macchiato',ar:'كراميل ماكياتو',desc_en:'Vanilla milk with caramel and espresso.',desc_ar:'حليب فانيلا مع كراميل وإسبريسو.',price:85,rating:4.9,reviews:945,tag:'hot'},
+{id:16,cat:'latte',en:'Vanilla Latte',ar:'فانيلا لاتيه',desc_en:'Espresso with vanilla syrup and steamed milk.',desc_ar:'إسبريسو مع شراب فانيلا وحليب بخاري.',price:80,rating:4.7,reviews:678,tag:''},
+{id:17,cat:'latte',en:'Hazelnut Latte',ar:'بندق لاتيه',desc_en:'Nutty hazelnut in creamy latte.',desc_ar:'نكهة بندق في لاتيه كريمي.',price:80,rating:4.7,reviews:543,tag:''},
+{id:18,cat:'latte',en:'Coconut Latte',ar:'جوز هند لاتيه',desc_en:'Coconut milk latte. Tropical twist.',desc_ar:'لاتيه حليب جوز هند. لمسة استوائية.',price:85,rating:4.8,reviews:432,tag:''},
+{id:19,cat:'latte',en:'Oat Milk Latte',ar:'لاتيه شوفان',desc_en:'Creamy oat milk. Dairy-free perfection.',desc_ar:'حليب شوفان كريمي. كمال بدون لبن.',price:90,rating:4.8,reviews:567,tag:'veg'},
+{id:20,cat:'latte',en:'Rose Latte',ar:'ورد لاتيه',desc_en:'Delicate rose-infused. Floral elegance.',desc_ar:'وردي رقيق. أناقة زهرية.',price:85,rating:4.8,reviews:389,tag:'new'},
+{id:21,cat:'latte',en:'Lavender Latte',ar:'خزامى لاتيه',desc_en:'Lavender-scented. Calming and aromatic.',desc_ar:'بخزامى عطرية. مُهدئ وعطري.',price:85,rating:4.7,reviews:298,tag:'new'},
+{id:22,cat:'latte',en:'Matcha Latte',ar:'ماتشا لاتيه',desc_en:'Ceremonial matcha with steamed milk.',desc_ar:'ماتشا طقسية مع حليب بخاري.',price:90,rating:4.8,reviews:678,tag:''},
+{id:23,cat:'cold',en:'Iced Latte',ar:'لاتيه بارد',desc_en:'Espresso with cold milk over ice.',desc_ar:'إسبريسو مع حليب بارد على الثلج.',price:75,rating:4.7,reviews:876,tag:''},
+{id:24,cat:'cold',en:'Cold Brew',ar:'كولد برو',desc_en:'Steeped 18 hours. Smooth and refreshing.',desc_ar:'متنقع 18 ساعة. ناعم ومنعش.',price:70,rating:4.9,reviews:1102,tag:'hot'},
+{id:25,cat:'cold',en:'Nitro Cold Brew',ar:'نيترو كولد برو',desc_en:'Nitrogen-infused. Cascading and creamy.',desc_ar:'بالنتروجين. متدفق وكريمي.',price:85,rating:4.9,reviews:789,tag:'chef'},
+{id:26,cat:'cold',en:'Iced Mocha',ar:'موكا بارد',desc_en:'Espresso, chocolate, cold milk, ice.',desc_ar:'إسبريسو، شوكولاتة، حليب بارد، ثلج.',price:85,rating:4.8,reviews:654,tag:''},
+{id:27,cat:'cold',en:'Frappuccino',ar:'فرابوتشينو',desc_en:'Blended coffee with milk, ice, cream.',desc_ar:'قهوة مخلوطة مع حليب وثلج وكريمة.',price:95,rating:4.7,reviews:876,tag:''},
+{id:28,cat:'cold',en:'Vietnamese Iced Coffee',ar:'قهوة فيتنامية باردة',desc_en:'Strong dark roast with condensed milk.',desc_ar:'تحميص داكن قوي مع لبن مُركّز.',price:75,rating:4.9,reviews:567,tag:'hot'},
+{id:29,cat:'cold',en:'Iced Matcha Latte',ar:'ماتشا لاتيه بارد',desc_en:'Chilled matcha with cold milk.',desc_ar:'ماتشا باردة مع حليب بارد.',price:95,rating:4.7,reviews:432,tag:''},
+{id:30,cat:'cold',en:'Salted Caramel Cold Brew',ar:'كولد برو كراميل مالح',desc_en:'Cold brew with salted caramel.',desc_ar:'كولد برو مع كراميل مالح.',price:85,rating:4.9,reviews:543,tag:'new'},
+{id:31,cat:'cold',en:'Spanish Latte',ar:'إسباني لاتيه',desc_en:'Espresso with condensed milk. Creamy.',desc_ar:'إسبريسو مع لبن مُركّز. كريمي.',price:80,rating:4.8,reviews:678,tag:''},
+{id:32,cat:'cold',en:'Iced Chai Latte',ar:'شاي لاتيه بارد',desc_en:'Spiced chai over ice with cold milk.',desc_ar:'شاي بالتوابل على الثلج مع حليب بارد.',price:85,rating:4.7,reviews:345,tag:''},
+{id:33,cat:'smoothie',en:'Mango Tango',ar:'مانجو تانجو',desc_en:'Fresh mango, banana, passion fruit.',desc_ar:'مانجو طازج، موز، فاكهة شغف.',price:85,rating:4.8,reviews:567,tag:''},
+{id:34,cat:'smoothie',en:'Berry Blast',ar:'توت متفجر',desc_en:'Mixed berries with yogurt and honey.',desc_ar:'توت مشmix مع زبادي وعسل.',price:90,rating:4.8,reviews:678,tag:''},
+{id:35,cat:'smoothie',en:'Green Goddess',ar:'الإلهة الخضراء',desc_en:'Spinach, banana, apple, ginger.',desc_ar:'سبانخ، موز، تفاح، وزنجبيل.',price:85,rating:4.7,reviews:432,tag:'veg'},
+{id:36,cat:'smoothie',en:'Açaí Bowl',ar:'بولة أكاي',desc_en:'Frozen açaí with granola and fruits.',desc_ar:'أكاي متجمد مع جرانولا وفاكهة.',price:110,rating:4.9,reviews:789,tag:'hot'},
+{id:37,cat:'smoothie',en:'Fresh Orange Juice',ar:'عصير برتقال طازج',desc_en:'Freshly squeezed orange juice.',desc_ar:'عصير برتقال مظغوط طازج.',price:55,rating:4.6,reviews:890,tag:''},
+{id:38,cat:'smoothie',en:'Lemon Mint Cooler',ar:'ليمون ونعناع بارد',desc_en:'Fresh lemon, mint, honey over ice.',desc_ar:'ليمون طازج، نعناع، عسل على الثلج.',price:50,rating:4.7,reviews:567,tag:''},
+{id:39,cat:'tea',en:'Hot Chocolate',ar:'شوكولاتة ساخنة',desc_en:'Premium Belgian chocolate. Pure comfort.',desc_ar:'شوكولاتة بلجيكية فاخرة. راحة نقية.',price:65,rating:4.9,reviews:901,tag:'hot'},
+{id:40,cat:'tea',en:'Turkish Coffee',ar:'قهوة تركية',desc_en:'Traditional Turkish coffee with cardamom.',desc_ar:'قهوة تركية تقليدية بالهيل.',price:50,rating:4.9,reviews:1023,tag:'hot'},
+{id:41,cat:'tea',en:'Moroccan Mint Tea',ar:'أتاي مغربي',desc_en:'Traditional Moroccan mint tea.',desc_ar:'شاي مغربي بنعناع تقليدي.',price:45,rating:4.9,reviews:678,tag:'hot'},
+{id:42,cat:'tea',en:'Chamomile Tea',ar:'كاموميل',desc_en:'Soothing chamomile flowers.',desc_ar:'زهور كاموميل مُهدئة.',price:35,rating:4.8,reviews:456,tag:''},
+{id:43,cat:'tea',en:'Earl Grey',ar:'إيرل غراي',desc_en:'Bergamot-scented black tea.',desc_ar:'شاي أسود بعبير البرغموت.',price:40,rating:4.7,reviews:456,tag:''},
+{id:44,cat:'tea',en:'Turmeric Latte',ar:'كركم لاتيه',desc_en:'Golden milk with turmeric and spices.',desc_ar:'حليب ذهبي بالكركم والتوابل.',price:70,rating:4.7,reviews:345,tag:'veg'},
+{id:45,cat:'tea',en:'Ginger Honey Tea',ar:'زنجبيل وعسل',desc_en:'Fresh ginger with honey and lemon.',desc_ar:'زنجبيل طازج مع عسل وليمون.',price:45,rating:4.7,reviews:456,tag:''},
+{id:46,cat:'tea',en:'Hibiscus Tea',ar:'كركديه',desc_en:'Refreshing karkadeh hot or cold.',desc_ar:'كركديه منعش ساخن أو بارد.',price:40,rating:4.8,reviews:567,tag:''},
+{id:47,cat:'pastry',en:'Butter Croissant',ar:'كرواسون بالزبدة',desc_en:'Flaky, buttery French croissant.',desc_ar:'كرواسون فرنسي بالزبدة مقرمش.',price:45,rating:4.8,reviews:1234,tag:'hot'},
+{id:48,cat:'pastry',en:'Almond Croissant',ar:'كرواسون لوز',desc_en:'Almond cream filled. Sliced almonds.',desc_ar:'محشو بكريمة اللوز. شرائح لوز.',price:55,rating:4.9,reviews:678,tag:'chef'},
+{id:49,cat:'pastry',en:'Cinnamon Roll',ar:'رول قرفة',desc_en:'Soft cinnamon swirl, cream cheese.',desc_ar:'حلزونة قرفة ناعمة مع كريم جبنة.',price:50,rating:4.7,reviews:789,tag:''},
+{id:50,cat:'pastry',en:'Pain au Chocolat',ar:'بان أو شوكولا',desc_en:'Chocolate-filled croissant.',desc_ar:'كرواسون محشو بالشوكولاتة.',price:50,rating:4.8,reviews:890,tag:''},
+{id:51,cat:'pastry',en:'Muffin',ar:'مافن',desc_en:'Blueberry, chocolate chip, or banana nut.',desc_ar:'توت أزرق، رقائق شوكولاتة، أو موز مُكسر.',price:40,rating:4.6,reviews:567,tag:''},
+{id:52,cat:'pastry',en:'Brioche',ar:'بريوش',desc_en:'Soft, buttery French bread.',desc_ar:'خبز فرنسي بالزبدة ناعم.',price:40,rating:4.7,reviews:456,tag:''},
+{id:53,cat:'sandwich',en:'Avocado Toast',ar:'توست أفوكادو',desc_en:'Sourdough, smashed avocado, poached egg.',desc_ar:'صاج، أفوكادو مسحوق، بيض مسلوق.',price:95,rating:4.9,reviews:1567,tag:'hot'},
+{id:54,cat:'sandwich',en:'Club Sandwich',ar:'كلوب ساندويتش',desc_en:'Triple decker: chicken, bacon, lettuce.',desc_ar:'ثلاثي الطبقات: فراخ، بيكون، وخس.',price:110,rating:4.8,reviews:890,tag:''},
+{id:55,cat:'sandwich',en:'Eggs Benedict',ar:'بيض بندكت',desc_en:'Poached eggs, hollandaise, muffin.',desc_ar:'بيض مسلوق، صوص هولنديز، مافن.',price:115,rating:4.9,reviews:789,tag:'chef'},
+{id:56,cat:'sandwich',en:'Panini',ar:'بانيني',desc_en:'Pressed turkey, pesto, mozzarella.',desc_ar:'مضغوط تركي، بيستو، وموزاريلا.',price:95,rating:4.7,reviews:456,tag:''},
+{id:57,cat:'sandwich',en:'Grilled Cheese',ar:'جبنة مشوية',desc_en:'Classic grilled cheese. Melty perfection.',desc_ar:'جبنة مشوية كلاسيكية. ذائقة مثالية.',price:70,rating:4.6,reviews:567,tag:''},
+{id:58,cat:'salad',en:'Caesar Salad',ar:'سلطة سيزر',desc_en:'Romaine, parmesan, croutons, dressing.',desc_ar:'رومانو، بارميزان، كراتين، وصلصة.',price:85,rating:4.7,reviews:678,tag:''},
+{id:59,cat:'salad',en:'Greek Salad',ar:'سلطة يونانية',desc_en:'Tomatoes, cucumber, olives, feta.',desc_ar:'طماطم، خيار، زيتون، وجبن فتا.',price:80,rating:4.7,reviews:567,tag:''},
+{id:60,cat:'salad',en:'Quinoa Bowl',ar:'بولة كينوا',desc_en:'Quinoa, roasted vegetables, tahini.',desc_ar:'كينوا، خضروات مشوية، وطحينة.',price:95,rating:4.8,reviews:345,tag:'veg'},
+{id:61,cat:'dessert',en:'Tiramisu',ar:'تيراميسو',desc_en:'Mascarpone, espresso, cocoa. Heavenly.',desc_ar:'ماسكاربوني، إسبريسو، كوراو. سماوي.',price:95,rating:4.9,reviews:1345,tag:'hot'},
+{id:62,cat:'dessert',en:'Crème Brûlée',ar:'كريم بروليه',desc_en:'Vanilla custard, caramelized sugar.',desc_ar:'كاسترد فانيلا، سكر كرامليز.',price:100,rating:4.8,reviews:678,tag:''},
+{id:63,cat:'dessert',en:'Cheesecake',ar:'تشيز كيك',desc_en:'New York style with berry compote.',desc_ar:'ستايل نيويورك مع كومبوت توت.',price:90,rating:4.8,reviews:890,tag:''},
+{id:64,cat:'dessert',en:'Chocolate Lava Cake',ar:'كيك لافا شوكولاتة',desc_en:'Warm cake, molten center, ice cream.',desc_ar:'كيك دافئ، قلب ذائب، وآيس كريم.',price:105,rating:4.9,reviews:1023,tag:'chef'},
+{id:65,cat:'dessert',en:'Baklava',ar:'بقلاوة',desc_en:'Phyllo layers, pistachios, honey.',desc_ar:'طبقات فيلو، فستق، وعسل.',price:75,rating:4.9,reviews:1567,tag:'hot'},
 ];
 
-const cats=[
-{id:'all',label:'All Items'},
-{id:'espresso',label:'Espresso'},
-{id:'latte',label:'Lattes & Milk'},
-{id:'cold',label:'Cold Drinks'},
-{id:'smoothie',label:'Smoothies'},
-{id:'tea',label:'Tea & Hot'},
-{id:'pastry',label:'Pastries'},
-{id:'sandwich',label:'Sandwiches'},
-{id:'salad',label:'Salads'},
-{id:'dessert',label:'Desserts'},
-];
+const cats=[{id:'all',en:'All',ar:'الكل'},{id:'espresso',en:'Espresso',ar:'إسبريسو'},{id:'latte',en:'Lattes',ar:'لاتيه'},{id:'cold',en:'Cold',ar:'بارد'},{id:'smoothie',en:'Smoothies',ar:'سموذي'},{id:'tea',en:'Tea & Hot',ar:'شاي وساخن'},{id:'pastry',en:'Pastries',ar:'مخبوزات'},{id:'sandwich',en:'Sandwiches',ar:'ساندويتشات'},{id:'salad',en:'Salads',ar:'سلطات'},{id:'dessert',en:'Desserts',ar:'حلويات'}];
 
 const featured=[
-{name:'Affogato Royale',sub:'$95 EGP',desc:'Gelato drowned in our finest espresso with gold leaf.',emoji:'🍨'},
-{name:'Truffle Croissant',sub:'$120 EGP',desc:'Buttery croissant filled with black truffle cream.',emoji:'🥐'},
-{name:'Rose Gold Latte',sub:'$110 EGP',desc:'Rose-infused latte with edible gold shimmer.',emoji:'🌸'},
-{name:'Chocolate Fondant',sub:'$130 EGP',desc:'Warm dark chocolate cake with liquid center.',emoji:'🍫'},
+{en:'Affogato Royale',ar:'أفوجاتو ملكي',sub:'95 EGP',desc_en:'Gelato drowned in our finest espresso with gold leaf.',desc_ar:'جيلاتو غارق في أحسن إسبريسو مع ورق ذهب.',emoji:'🍨'},
+{en:'Truffle Croissant',ar:'كرواسون ترافل',sub:'120 EGP',desc_en:'Buttery croissant with black truffle cream.',desc_ar:'كرواسون بالزبدة مع كريمة ترافل اسود.',emoji:'🥐'},
+{en:'Rose Gold Latte',ar:'لاتيه روز جولد',sub:'110 EGP',desc_en:'Rose-infused latte with edible gold shimmer.',desc_ar:'لاتيه وردي مع لمعان ذهب آكل.',emoji:'🌸'},
+{en:'Chocolate Fondant',ar:'شوكولاتة فوندان',sub:'130 EGP',desc_en:'Warm dark chocolate cake with liquid center.',desc_ar:'كيك شوكولاتة داكن دافئ مع مركز سائل.',emoji:'🍫'},
 ];
 
 const reviews=[
-{text:'Best coffee spot in Cairo. The design is incredible and the coffee is irresistible. Became my daily spot!',name:'Sara Ahmed',role:'Regular Customer',avatar:'👩',stars:5},
-{text:'Their lattes are pure art. I try something new every visit and never get disappointed. Highly recommend!',name:'Mohamed Ali',role:'Coffee Enthusiast',avatar:'👨',stars:5},
-{text:'The atmosphere is royal from the moment you walk in. Ambiance, service, and taste — all top notch.',name:'Nora Hassan',role:'Food Blogger',avatar:'👩‍🦰',stars:5},
+{text_en:'Best coffee spot in Cairo. The design is incredible and the coffee is irresistible!',text_ar:'أحسن مكان قهوة في القاهرة. التصميم خرافي والقهوة لا تُقاوم!',name:'Sara Ahmed',name_ar:'سارة أحمد',role:'Regular',role_ar:'عميلة منتظمة',avatar:'👩'},
+{text_en:'Their lattes are pure art. I try something new every visit and never disappointed.',text_ar:'اللاتيه عندهم فن. كل مرة بجرب حاجة جديدة وعمري ما اتبسط.',name:'Mohamed Ali',name_ar:'محمد علي',role:'Coffee Lover',role_ar:'عاشق قهوة',avatar:'👨'},
+{text_en:'The atmosphere is royal. Ambiance, service, and taste — all top notch.',text_ar:'المكان ملكي. الأجواء والخدمة والطعم — كل شيء على أعلى مستوى.',name:'Nora Hassan',name_ar:'نورا حسن',role:'Food Blogger',role_ar:'بلوقري أكل',avatar:'👩‍🦰'},
 ];
 
 const gallery=[
-{title:'The Perfect Pour',desc:'Latte art by our master baristas',g:'linear-gradient(135deg,#2c1810,#4a2c20)',icon:'☕'},
-{title:'Morning Ritual',desc:'Start your day with excellence',g:'linear-gradient(135deg,#3d2317,#1a0f08)',icon:'🌅'},
-{title:'Sweet Indulgence',desc:'Handcrafted pastries daily',g:'linear-gradient(135deg,#4a2a1a,#2e1a0e)',icon:'🥐'},
-{title:'Gold Standard',desc:'Premium ingredients, no compromise',g:'linear-gradient(135deg,#4a3a0a,#2e2406)',icon:'✨'},
-{title:'Cold Perfection',desc:'Refreshing cold brew collection',g:'linear-gradient(135deg,#0c2d4a,#081c33)',icon:'🧊'},
-{title:'The Space',desc:'Designed for comfort and style',g:'linear-gradient(135deg,#1a1a2e,#16213e)',icon:'🪑'},
+{en:'The Perfect Pour',ar:'الصبة المثالية',desc_en:'Latte art by our master baristas',desc_ar:'فن اللاتيه من باريستا خبرائنا',g:'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&h=400&fit=crop',icon:'☕'},
+{en:'Morning Ritual',ar:'طقوس الصبح',desc_en:'Start your day with excellence',desc_ar:'ابدأ يومك بالتميز',g:'https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=600&h=400&fit=crop',icon:'🌅'},
+{en:'Sweet Indulgence',ar:'تلوّذ حلو',desc_en:'Handcrafted pastries daily',desc_ar:'مخبوزات يدوية كل يوم',g:'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&h=400&fit=crop',icon:'🥐'},
+{en:'Gold Standard',ar:'المعيار الذهبي',desc_en:'Premium ingredients only',desc_ar:'مكونات فاخرة فقط',g:'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=600&h=400&fit=crop',icon:'✨'},
+{en:'Cold Perfection',ar:'كمال بارد',desc_en:'Refreshing cold brews',desc_ar:'كولد برو منعش',g:'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&h=400&fit=crop',icon:'🧊'},
+{en:'The Space',ar:'المكان',desc_en:'Designed for comfort',desc_ar:'مُصمم للراحة',g:'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&h=400&fit=crop',icon:'🪑'},
 ];
 
-let activeCat='all';
+function getImg(cat,i){const arr=IMGS[cat]||IMGS.espresso;return`https://images.unsplash.com/${arr[i%arr.length]}?w=600&h=400&fit=crop`}
 
 function renderFilters(){
 const w=document.getElementById('filterWrap');
-w.innerHTML=cats.map(c=>`<button class="filter-btn${c.id===activeCat?' active':''}" data-cat="${c.id}">${c.label}</button>`).join('');
+w.innerHTML=cats.map(c=>`<button class="filter-btn${c.id===activeCat?' active':''}" data-cat="${c.id}">${lang==='ar'?c.ar:c.en}</button>`).join('');
 w.querySelectorAll('.filter-btn').forEach(b=>{b.onclick=()=>{activeCat=b.dataset.cat;renderFilters();renderMenu()}});
 }
 
 function renderMenu(){
 const g=document.getElementById('menuGrid');
 const list=activeCat==='all'?items:items.filter(i=>i.cat===activeCat);
+let counts={};list.forEach(i=>{counts[i.cat]=(counts[i.cat]||0)+1});
 g.innerHTML=list.map((it,i)=>{
-const bg=BG[it.cat]||BG.espresso;
-const emoji=E[it.cat]||E.espresso;
-const tag=it.tag?`<div class="card-tag tag-${it.tag}">${it.tag==='new'?'NEW':it.tag==='hot'?'🔥 HOT':it.tag==='chef'?'👨‍🍳 CHEF':it.tag==='veg'?'🌿 VEG':''}</div>`:'';
-return`<div class="card card-in" style="transition-delay:${i*25}ms">
-<div class="card-img"><div class="card-img-bg" style="background:${bg}"></div>
-<div class="card-emoji">${emoji}</div>${tag}</div>
+const img=getImg(it.cat,i);
+const tag=it.tag?`<div class="card-tag tag-${it.tag}">${it.tag==='new'?'NEW':it.tag==='hot'?'🔥 HOT':it.tag==='chef'?'👨‍🍳':it.tag==='veg'?'🌿':''}</div>`:'';
+return`<div class="card card-in" style="transition-delay:${i*20}ms">
+<div class="card-img"><img src="${img}" alt="${lang==='ar'?it.ar:it.en}" loading="lazy"><div class="card-img-overlay"></div>${tag}</div>
 <div class="card-body">
-<div class="card-name">${it.name}</div>
-<div class="card-desc">${it.desc}</div>
+<div class="card-name">${lang==='ar'?it.ar:it.en}</div>
+<div class="card-name-ar">${lang==='ar'?it.en:it.ar}</div>
+<div class="card-desc">${lang==='ar'?it.desc_ar:it.desc_en}</div>
 <div class="card-footer">
 <div class="card-price">${it.price} <small>EGP</small></div>
 <div class="card-rating"><span class="card-stars">${'★'.repeat(Math.floor(it.rating))}</span><span class="card-rating-num">${it.rating}</span></div>
 </div></div></div>`}).join('');
-requestAnimationFrame(()=>{g.querySelectorAll('.card-in').forEach((el,i)=>{setTimeout(()=>el.classList.add('show'),i*25)})});
+requestAnimationFrame(()=>{g.querySelectorAll('.card-in').forEach((el,i)=>{setTimeout(()=>el.classList.add('show'),i*20)})});
 }
 
 function renderFeatured(){
@@ -743,20 +468,21 @@ document.getElementById('featuredGrid').innerHTML=featured.map(f=>`
 <div class="featured-card reveal">
 <div class="featured-icon">${f.emoji}</div>
 <div class="featured-info">
-<h3>${f.name}</h3>
+<h3>${lang==='ar'?f.ar:f.en}</h3>
 <div class="sub">${f.sub}</div>
-<p>${f.desc}</p>
+<p>${lang==='ar'?f.desc_ar:f.desc_en}</p>
 </div></div>`).join('');
+observeAll();
 }
 
 function renderGallery(){
 document.getElementById('galleryScroll').innerHTML=gallery.map(g=>`
 <div class="gallery-card">
-<div class="gallery-bg" style="background:${g.g}"></div>
+<img src="${g.g}" alt="${lang==='ar'?g.ar:g.en}" loading="lazy">
 <div class="gallery-overlay">
-<div class="gallery-icon">${g.icon}</div>
-<h4>${g.title}</h4>
-<p>${g.desc}</p>
+<div class="gi">${g.icon}</div>
+<h4>${lang==='ar'?g.ar:g.en}</h4>
+<p>${lang==='ar'?g.desc_ar:g.desc_en}</p>
 </div></div>`).join('');
 }
 
@@ -764,34 +490,52 @@ function renderReviews(){
 document.getElementById('reviewsGrid').innerHTML=reviews.map(r=>`
 <div class="review-card reveal">
 <div class="review-quote">❝</div>
-<div class="review-stars">${'★'.repeat(r.stars)}</div>
-<div class="review-text">"${r.text}"</div>
+<div class="review-stars">★★★★★</div>
+<div class="review-text">"${lang==='ar'?r.text_ar:r.text_en}"</div>
 <div class="review-author">
 <div class="review-avatar">${r.avatar}</div>
-<div><div class="review-name">${r.name}</div><div class="review-role">${r.role}</div></div>
+<div><div class="review-name">${lang==='ar'?r.name_ar:r.name}</div><div class="review-role">${lang==='ar'?r.role_ar:r.role}</div></div>
 </div></div>`).join('');
+observeAll();
+}
+
+function updateLang(){
+document.querySelectorAll('[data-en]').forEach(el=>{el.textContent=el.dataset[lang]||el.textContent});
+document.documentElement.lang=lang;
+document.documentElement.dir=lang==='ar'?'rtl':'ltr';
 }
 
 // GLOW
-const glow=document.getElementById('cursorGlow');
-document.addEventListener('mousemove',e=>{glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px'});
+document.addEventListener('mousemove',e=>{const g=document.getElementById('cursorGlow');g.style.left=e.clientX+'px';g.style.top=e.clientY+'px'});
 
-// HERO PARTICLES
-(function(){
-const c=document.getElementById('heroParticles');
-for(let i=0;i<20;i++){
-const p=document.createElement('div');
-p.className='hero-particle';
-p.style.left=Math.random()*100+'%';
-p.style.animationDuration=(8+Math.random()*12)+'s';
-p.style.animationDelay=Math.random()*10+'s';
-p.style.width=p.style.height=(2+Math.random()*3)+'px';
-c.appendChild(p);
-}
-})();
+// PARTICLES
+(function(){const c=document.getElementById('heroParticles');for(let i=0;i<20;i++){const p=document.createElement('div');p.className='hero-particle';p.style.left=Math.random()*100+'%';p.style.animationDuration=(8+Math.random()*12)+'s';p.style.animationDelay=Math.random()*10+'s';p.style.width=p.style.height=(2+Math.random()*3)+'px';c.appendChild(p)}})();
 
-// SCROLL NAV
+// NAV
 window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',window.scrollY>50)});
+
+// THEME
+document.getElementById('themeBtn').onclick=()=>{
+theme=theme==='dark'?'light':'dark';
+document.documentElement.setAttribute('data-theme',theme);
+document.getElementById('themeBtn').textContent=theme==='dark'?'☀':'☾';
+};
+
+// LANG
+document.getElementById('langBtn').onclick=()=>{
+lang=lang==='ar'?'en':'ar';
+document.getElementById('langBtn').textContent=lang==='ar'?'EN':'عربي';
+updateLang();renderFilters();renderMenu();renderFeatured();renderGallery();renderReviews();
+};
+
+// MOBILE
+document.getElementById('mobileToggle').onclick=()=>{
+const l=document.querySelector('.nav-links');
+l.style.display=l.style.display==='flex'?'none':'flex';
+l.style.position='fixed';l.style.top='60px';l.style.left='0';l.style.right='0';
+l.style.flexDirection='column';l.style.background=theme==='dark'?'rgba(5,5,5,.98)':'rgba(248,245,240,.98)';
+l.style.padding='20px';l.style.gap='15px';l.style.borderBottom='1px solid var(--section-border)';l.style.zIndex='999';
+};
 
 // REVEAL
 const revObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.1});
