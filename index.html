@@ -217,7 +217,6 @@ section{padding:50px 20px}
     <li><a href="#contact" data-en="Contact" data-ar="تواصل">Contact</a></li>
   </ul>
   <div class="nav-actions">
-    <button class="lang-btn" id="langBtn" title="Toggle Language">EN</button>
     <button class="theme-btn" id="themeBtn" title="Toggle Theme">☀</button>
     <button class="mobile-toggle" id="mobileToggle">☰</button>
   </div>
@@ -341,7 +340,7 @@ dessert:['photo-1551024506-0bccd828d307','photo-1551024601-bec78aea704b','photo-
 };
 const E={espresso:'☕',latte:'🥛',cold:'🧊',smoothie:'🥤',tea:'🍵',pastry:'🥐',sandwich:'🥪',salad:'🥗',dessert:'🍰'};
 
-let lang='ar',theme='dark',activeCat='all';
+let lang='en',theme='dark',activeCat='all';
 
 const items=[
 {id:1,cat:'espresso',en:'Classic Espresso',ar:'إسبريسو كلاسيكي',desc_en:'Single origin Ethiopian beans. Rich crema, bold flavor.',desc_ar:'حبوب إثيوبية أصل واحد. كريما غنية، طعم قوي.',price:45,rating:4.9,reviews:892,tag:''},
@@ -519,13 +518,6 @@ document.getElementById('themeBtn').onclick=()=>{
 theme=theme==='dark'?'light':'dark';
 document.documentElement.setAttribute('data-theme',theme);
 document.getElementById('themeBtn').textContent=theme==='dark'?'☀':'☾';
-};
-
-// LANG
-document.getElementById('langBtn').onclick=()=>{
-lang=lang==='ar'?'en':'ar';
-document.getElementById('langBtn').textContent=lang==='ar'?'EN':'عربي';
-updateLang();renderFilters();renderMenu();renderFeatured();renderGallery();renderReviews();
 };
 
 // MOBILE
